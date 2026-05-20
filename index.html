@@ -1,0 +1,1433 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Traveler's Feast — Teyvat Culinary Haven</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #F5EDD6;
+    --cream-light: #FBF6ED;
+    --gold: #C9A84C;
+    --gold-light: #E8C96A;
+    --gold-dark: #8B6914;
+    --brown: #5C3D1E;
+    --brown-light: #7A5230;
+    --brown-dark: #3A2010;
+    --sky: #7BAFD4;
+    --sky-light: #A8CEDF;
+    --inazuma: #6B4C8A;
+    --inazuma-light: #9B7AB8;
+    --inazuma-dark: #3E2557;
+    --dark: #1A0F05;
+    --dark-2: #2A1A08;
+    --text-dark: #2C1810;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: var(--dark);
+    color: var(--cream);
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* CUSTOM CURSOR */
+  .cursor {
+    width: 12px; height: 12px;
+    border: 2px solid var(--gold);
+    border-radius: 50%;
+    position: fixed; pointer-events: none; z-index: 99999;
+    transition: all 0.1s ease;
+    transform: translate(-50%, -50%);
+  }
+  .cursor-trail {
+    width: 32px; height: 32px;
+    border: 1px solid rgba(201,168,76,0.3);
+    border-radius: 50%;
+    position: fixed; pointer-events: none; z-index: 99998;
+    transition: all 0.3s ease;
+    transform: translate(-50%, -50%);
+  }
+
+  /* LOADING SCREEN */
+  #loading-screen {
+    position: fixed; inset: 0; z-index: 9999;
+    background: radial-gradient(ellipse at center, #1A0F05 0%, #0A0501 100%);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    transition: opacity 1s ease, visibility 1s ease;
+  }
+  #loading-screen.hidden { opacity: 0; visibility: hidden; }
+
+  .loading-emblem {
+    width: 120px; height: 120px;
+    border: 2px solid var(--gold);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 24px;
+    animation: emblemSpin 3s linear infinite;
+    position: relative;
+  }
+  .loading-emblem::before {
+    content: '';
+    position: absolute; inset: 6px;
+    border: 1px solid rgba(201,168,76,0.4);
+    border-radius: 50%;
+    animation: emblemSpin 2s linear infinite reverse;
+  }
+  .loading-emblem-inner {
+    font-family: 'Cinzel', serif;
+    font-size: 40px;
+    color: var(--gold);
+    text-shadow: 0 0 20px rgba(201,168,76,0.6);
+  }
+  @keyframes emblemSpin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  .loading-title {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(20px, 4vw, 32px);
+    color: var(--gold);
+    letter-spacing: 8px;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+  }
+  .loading-sub {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    color: rgba(245,237,214,0.5);
+    letter-spacing: 4px;
+    margin-bottom: 40px;
+  }
+  .loading-bar-wrap {
+    width: 280px; height: 2px;
+    background: rgba(201,168,76,0.2);
+    border-radius: 2px; overflow: hidden;
+  }
+  .loading-bar {
+    height: 100%; width: 0;
+    background: linear-gradient(90deg, var(--gold-dark), var(--gold), var(--gold-light));
+    border-radius: 2px;
+    animation: loadProgress 2.5s ease forwards;
+  }
+  @keyframes loadProgress {
+    0% { width: 0; }
+    30% { width: 35%; }
+    60% { width: 72%; }
+    85% { width: 90%; }
+    100% { width: 100%; }
+  }
+  .loading-tip {
+    margin-top: 20px;
+    font-size: 11px;
+    color: rgba(245,237,214,0.35);
+    font-style: italic;
+    letter-spacing: 1px;
+  }
+
+  /* NAVBAR */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    padding: 0 5%;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 70px;
+    transition: all 0.4s ease;
+  }
+  nav.scrolled {
+    background: rgba(26,15,5,0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(201,168,76,0.2);
+    height: 60px;
+  }
+  .nav-logo {
+    font-family: 'Cinzel', serif;
+    font-size: 18px;
+    color: var(--gold);
+    letter-spacing: 3px;
+    text-decoration: none;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .nav-logo-icon { font-size: 22px; }
+  .nav-links {
+    display: flex; gap: 36px;
+    list-style: none;
+  }
+  .nav-links a {
+    font-family: 'Cinzel', serif;
+    font-size: 12px;
+    letter-spacing: 2px;
+    color: rgba(245,237,214,0.7);
+    text-decoration: none;
+    text-transform: uppercase;
+    position: relative;
+    transition: color 0.3s;
+  }
+  .nav-links a::after {
+    content: '';
+    position: absolute; bottom: -4px; left: 0; right: 0;
+    height: 1px; background: var(--gold);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+  }
+  .nav-links a:hover { color: var(--gold); }
+  .nav-links a:hover::after { transform: scaleX(1); }
+
+  .nav-hamburger {
+    display: none;
+    flex-direction: column; gap: 5px;
+    cursor: pointer; padding: 4px;
+  }
+  .nav-hamburger span {
+    width: 24px; height: 1.5px;
+    background: var(--gold);
+    transition: all 0.3s;
+  }
+
+  /* SECTIONS */
+  section { min-height: 100vh; position: relative; overflow: hidden; }
+
+  /* ===== HERO ===== */
+  #home {
+    background: radial-gradient(ellipse at 30% 50%, rgba(107,76,138,0.3) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 30%, rgba(123,175,212,0.2) 0%, transparent 50%),
+                linear-gradient(180deg, #0A0501 0%, #1A0F05 40%, #0D0804 100%);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .hero-particles {
+    position: absolute; inset: 0; pointer-events: none;
+    overflow: hidden;
+  }
+  .particle {
+    position: absolute;
+    width: 2px; height: 2px;
+    background: var(--gold);
+    border-radius: 50%;
+    animation: particleFloat linear infinite;
+    opacity: 0;
+  }
+  @keyframes particleFloat {
+    0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+    10% { opacity: 0.8; }
+    90% { opacity: 0.4; }
+    100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+  }
+  .hero-content {
+    text-align: center;
+    z-index: 2; position: relative;
+    padding: 120px 20px 80px;
+    animation: heroReveal 1.2s ease 3s both;
+  }
+  @keyframes heroReveal {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .hero-badge {
+    display: inline-block;
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 5px;
+    color: var(--gold);
+    border: 1px solid rgba(201,168,76,0.4);
+    padding: 6px 20px;
+    margin-bottom: 24px;
+    text-transform: uppercase;
+  }
+  .hero-title {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(40px, 8vw, 90px);
+    font-weight: 900;
+    line-height: 1.0;
+    color: var(--cream);
+    margin-bottom: 8px;
+    text-shadow: 0 0 60px rgba(201,168,76,0.2);
+  }
+  .hero-title .accent { color: var(--gold); }
+  .hero-sub {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(16px, 3vw, 26px);
+    font-style: italic;
+    color: rgba(245,237,214,0.6);
+    margin-bottom: 40px;
+    letter-spacing: 2px;
+  }
+  .hero-promo {
+    max-width: 560px; margin: 0 auto 48px;
+    font-size: 14px; line-height: 1.9;
+    color: rgba(245,237,214,0.55);
+    letter-spacing: 0.5px;
+  }
+  .hero-divider {
+    display: flex; align-items: center; justify-content: center;
+    gap: 16px; margin-bottom: 40px;
+  }
+  .hero-divider-line {
+    width: 80px; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold-dark));
+  }
+  .hero-divider-line.r { background: linear-gradient(90deg, var(--gold-dark), transparent); }
+  .hero-divider-gem { color: var(--gold); font-size: 12px; }
+  .cta-group { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+  .btn-primary {
+    font-family: 'Cinzel', serif;
+    font-size: 12px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    padding: 16px 36px;
+    background: var(--gold);
+    color: var(--brown-dark);
+    text-decoration: none;
+    border: none; cursor: pointer;
+    position: relative; overflow: hidden;
+    transition: all 0.3s ease;
+    display: inline-block;
+  }
+  .btn-primary::before {
+    content: '';
+    position: absolute; top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.5s;
+  }
+  .btn-primary:hover::before { left: 100%; }
+  .btn-primary:hover { background: var(--gold-light); transform: translateY(-2px); }
+  .btn-secondary {
+    font-family: 'Cinzel', serif;
+    font-size: 12px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    padding: 15px 36px;
+    background: transparent;
+    color: var(--gold);
+    border: 1px solid var(--gold);
+    text-decoration: none; cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-block;
+  }
+  .btn-secondary:hover {
+    background: rgba(201,168,76,0.1);
+    transform: translateY(-2px);
+  }
+
+  /* HERO SCROLL INDICATOR */
+  .scroll-indicator {
+    position: absolute; bottom: 30px; left: 50%;
+    transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    animation: scrollBounce 2s ease infinite;
+  }
+  .scroll-indicator span {
+    font-family: 'Cinzel', serif;
+    font-size: 9px; letter-spacing: 3px;
+    color: rgba(201,168,76,0.5);
+    text-transform: uppercase;
+  }
+  .scroll-arrow {
+    width: 20px; height: 20px;
+    border-right: 1px solid var(--gold);
+    border-bottom: 1px solid var(--gold);
+    transform: rotate(45deg);
+    opacity: 0.5;
+  }
+  @keyframes scrollBounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(6px); }
+  }
+
+  /* ===== SECTION HEADERS ===== */
+  .section-header { text-align: center; margin-bottom: 60px; }
+  .section-tag {
+    font-family: 'Cinzel', serif;
+    font-size: 10px; letter-spacing: 5px;
+    color: var(--gold);
+    text-transform: uppercase;
+    display: block; margin-bottom: 12px;
+  }
+  .section-title {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(28px, 5vw, 50px);
+    font-weight: 700;
+    color: var(--cream);
+    line-height: 1.15;
+    margin-bottom: 16px;
+  }
+  .section-title .gold { color: var(--gold); }
+  .section-desc {
+    font-size: 14px; line-height: 1.9;
+    color: rgba(245,237,214,0.5);
+    max-width: 500px; margin: 0 auto;
+  }
+  .ornament {
+    display: flex; align-items: center; justify-content: center;
+    gap: 12px; margin: 16px auto;
+  }
+  .ornament-line {
+    width: 60px; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold-dark));
+  }
+  .ornament-line.r { background: linear-gradient(90deg, var(--gold-dark), transparent); }
+  .ornament-diamond {
+    width: 6px; height: 6px;
+    background: var(--gold);
+    transform: rotate(45deg);
+  }
+
+  /* ===== MENU SECTION ===== */
+  #menu {
+    padding: 100px 5%;
+    background: linear-gradient(180deg, var(--dark) 0%, var(--dark-2) 50%, var(--dark) 100%);
+    min-height: unset;
+  }
+  .menu-filters {
+    display: flex; gap: 12px; justify-content: center;
+    flex-wrap: wrap; margin-bottom: 50px;
+  }
+  .filter-btn {
+    font-family: 'Cinzel', serif;
+    font-size: 10px; letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 8px 20px;
+    background: transparent;
+    color: rgba(245,237,214,0.5);
+    border: 1px solid rgba(201,168,76,0.25);
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .filter-btn.active, .filter-btn:hover {
+    background: rgba(201,168,76,0.1);
+    color: var(--gold);
+    border-color: var(--gold);
+  }
+  .menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 28px;
+    max-width: 1200px; margin: 0 auto;
+  }
+  /* ===== CARD UTAMA ===== */
+  .menu-card {
+	background: rgba(42,26,8,0.75); /* Ditandai agak gelap sedikit untuk fallback */
+	border: 1px solid rgba(201,168,76,0.15);
+	position: relative; 
+	overflow: hidden;
+	transition: all 0.4s ease;
+	cursor: pointer;
+	min-height: 380px; /* Memberi standar tinggi kartu agar seragam */
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-end; /* Memaksa teks berkumpul di bagian bawah kartu */
+}
+
+/* ===== GAMBAR FULL LAYAR KOTAK ===== */
+.menu-card-img-wrap { 
+  position: absolute; /* KUNCI: Membuat gambar lepas dari baris dan memenuhi kotak */
+  top: 0;
+  left: 0;
+  width: 100%; 
+  height: 100%; /* Mengisi penuh 100% tinggi kartu */
+  overflow: hidden; 
+  z-index: 1; /* Berada di lapisan bawah teks */
+}
+
+.menu-card-img { 
+  width: 100%; 
+  height: 100%; 
+  object-fit: cover; 
+  display: block; 
+  filter: sepia(30%) saturate(100%) brightness(60%); /* Di-redupkan (brightness 60%) agar teks di atasnya mudah dibaca */
+  transition: all 0.5s ease; 
+}
+
+/* Efek Hover Gambar */
+.menu-card:hover .menu-card-img { 
+  filter: sepia(10%) saturate(120%) brightness(70%); /* Sedikit lebih terang saat di-hover */
+  transform: scale(1.06); 
+}
+
+/* ===== LAPISAN GRADASI (Agar Teks Super Jelas) ===== */
+/* Menambahkan efek bayangan gelap di bawah teks agar tulisan cream/gold tidak mati tertabrak warna foto */
+.menu-card-img-wrap::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(26,15,5,0.95) 0%, rgba(26,15,5,0.6) 50%, rgba(26,15,5,0.2) 100%);
+  z-index: 2;
+}
+
+/* ===== BADGE WILAYAH (Tetap di pojok kanan atas) ===== */
+.menu-card-region { 
+  position: absolute; 
+  top: 16px; 
+  right: 16px; 
+  font-family: 'Cinzel', serif; 
+  font-size: 9px; 
+  letter-spacing: 2px; 
+  padding: 4px 10px; 
+  background: rgba(26,15,5,0.9); 
+  color: var(--gold); 
+  border: 1px solid rgba(201,168,76,0.4); 
+  text-transform: uppercase; 
+  z-index: 10; /* Berada di paling atas */
+}
+
+/* ===== BAGIAN BODY TEKS (MENUMPUK DI ATAS GAMBAR) ===== */
+.menu-card-body { 
+  padding: 24px 20px 20px 20px; 
+  position: relative; 
+  z-index: 5; /* Mengangkat teks agar naik ke atas lapisan gambar */
+  pointer-events: none; /* Biar klik mouse tembus langsung ke kartu */
+}
+
+.menu-card-name {
+  font-family: 'Cinzel', serif;
+  font-size: 18px; /* Sedikit dinaikkan biar makin tegas */
+  font-weight: 600;
+  color: var(--cream); 
+  margin-bottom: 8px;
+  line-height: 1.3;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.8); /* Efek bayangan teks */
+}
+
+.menu-card-desc {
+  font-size: 12px; 
+  line-height: 1.6;
+  color: rgba(245,237,214,0.75); /* Di-terangkan sedikit dari 0.45 ke 0.75 agar kontras dengan background foto */
+  margin-bottom: 16px;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+}
+
+/* Footer & Rating */
+.menu-card-footer {
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between;
+}
+
+.menu-card-price {
+  font-family: 'Cinzel', serif;
+  font-size: 18px; 
+  font-weight: 700;
+  color: var(--gold);
+  text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+}
+
+   .menu-card-rating {
+	display: flex; 
+	align-items: center; 
+	gap: 4px;
+	font-size: 12px; 
+	color: rgba(245,237,214,0.8);
+	text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+}
+  .stars { color: var(--gold); font-size: 11px; letter-spacing: 1px; }
+  .menu-card-add {
+    position: absolute; bottom: 20px; right: 20px;
+    width: 36px; height: 36px;
+    background: var(--gold);
+    color: var(--brown-dark);
+    border: none; cursor: pointer;
+    font-size: 18px; font-weight: 300;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; transition: all 0.3s;
+  }
+  .menu-card:hover .menu-card-add { opacity: 1; }
+
+  /* ===== ABOUT SECTION ===== */
+  #about {
+    padding: 100px 5%;
+    background: linear-gradient(135deg, var(--dark) 0%, rgba(107,76,138,0.15) 50%, var(--dark) 100%);
+    min-height: unset;
+  }
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px; align-items: center;
+    max-width: 1100px; margin: 0 auto;
+  }
+  .about-visual {
+    position: relative;
+  }
+  .about-img-frame {
+    position: relative;
+    width: 100%; padding-top: 120%;
+    background: rgba(42,26,8,0.5);
+    border: 1px solid rgba(201,168,76,0.2);
+    overflow: hidden;
+  }
+  .about-img-frame-inner {
+    position: absolute; inset: 16px;
+    background: linear-gradient(135deg, rgba(107,76,138,0.3), rgba(42,26,8,0.8), rgba(123,175,212,0.2));
+    border: 1px solid rgba(201,168,76,0.1);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .about-img-symbol {
+    font-size: 80px; opacity: 0.15;
+    filter: sepia(100%) saturate(300%);
+  }
+  .about-corner {
+    position: absolute;
+    width: 30px; height: 30px;
+  }
+  .about-corner.tl { top: 6px; left: 6px; border-top: 2px solid var(--gold); border-left: 2px solid var(--gold); }
+  .about-corner.tr { top: 6px; right: 6px; border-top: 2px solid var(--gold); border-right: 2px solid var(--gold); }
+  .about-corner.bl { bottom: 6px; left: 6px; border-bottom: 2px solid var(--gold); border-left: 2px solid var(--gold); }
+  .about-corner.br { bottom: 6px; right: 6px; border-bottom: 2px solid var(--gold); border-right: 2px solid var(--gold); }
+  .about-badge {
+    position: absolute; bottom: -20px; right: -20px;
+    width: 120px; height: 120px;
+    background: rgba(42,26,8,0.9);
+    border: 1px solid rgba(201,168,76,0.4);
+    border-radius: 50%;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+  }
+  .about-badge-num {
+    font-family: 'Cinzel', serif;
+    font-size: 28px; font-weight: 900;
+    color: var(--gold); line-height: 1;
+  }
+  .about-badge-text {
+    font-size: 9px; letter-spacing: 1px;
+    color: rgba(245,237,214,0.5); text-align: center;
+    text-transform: uppercase; padding: 0 8px;
+  }
+  .about-text { }
+  .about-title {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(24px, 4vw, 40px);
+    font-weight: 700; line-height: 1.2;
+    color: var(--cream); margin-bottom: 20px;
+  }
+  .about-title .gold { color: var(--gold); }
+  .about-story {
+    font-size: 14px; line-height: 2;
+    color: rgba(245,237,214,0.55);
+    margin-bottom: 20px;
+  }
+  .about-features {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+    margin: 32px 0;
+  }
+  .about-feat {
+    display: flex; align-items: flex-start; gap: 12px;
+  }
+  .about-feat-icon {
+    width: 36px; height: 36px; flex-shrink: 0;
+    border: 1px solid rgba(201,168,76,0.3);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; color: var(--gold);
+  }
+  .about-feat-label {
+    font-family: 'Cinzel', serif;
+    font-size: 12px; color: var(--cream);
+    margin-bottom: 2px;
+  }
+  .about-feat-desc {
+    font-size: 11px; color: rgba(245,237,214,0.4);
+    line-height: 1.5;
+  }
+
+  /* ===== RESERVATION ===== */
+  #reservation {
+    padding: 100px 5%;
+    background: linear-gradient(180deg, var(--dark) 0%, rgba(92,61,30,0.1) 50%, var(--dark) 100%);
+    min-height: unset;
+  }
+  .reservation-wrap {
+    max-width: 700px; margin: 0 auto;
+    background: rgba(42,26,8,0.5);
+    border: 1px solid rgba(201,168,76,0.2);
+    padding: 50px;
+    position: relative;
+  }
+  .reservation-wrap::before {
+    content: '⚜';
+    position: absolute; top: -14px; left: 50%;
+    transform: translateX(-50%);
+    background: var(--dark-2);
+    color: var(--gold); font-size: 20px;
+    padding: 0 12px;
+  }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .form-group { margin-bottom: 24px; }
+  .form-group label {
+    display: block;
+    font-family: 'Cinzel', serif;
+    font-size: 10px; letter-spacing: 2px;
+    color: var(--gold); text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    width: 100%;
+    background: rgba(26,15,5,0.6);
+    border: 1px solid rgba(201,168,76,0.2);
+    color: var(--cream);
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    padding: 12px 16px;
+    outline: none;
+    transition: border-color 0.3s;
+    -webkit-appearance: none;
+  }
+  .form-group select option { background: var(--dark-2); color: var(--cream); }
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus {
+    border-color: var(--gold);
+  }
+  .form-group textarea { resize: none; height: 100px; }
+  .form-submit {
+    width: 100%; padding: 16px;
+    background: var(--gold);
+    color: var(--brown-dark);
+    font-family: 'Cinzel', serif;
+    font-size: 13px; letter-spacing: 3px;
+    text-transform: uppercase;
+    border: none; cursor: pointer;
+    transition: all 0.3s; position: relative; overflow: hidden;
+  }
+  .form-submit:hover { background: var(--gold-light); }
+  .form-success {
+    display: none; text-align: center; padding: 20px;
+    color: var(--gold);
+    font-family: 'Cinzel', serif;
+    font-size: 14px; letter-spacing: 2px;
+  }
+
+  /* ===== GALLERY ===== */
+  #gallery {
+    padding: 100px 5%;
+    background: var(--dark-2);
+    min-height: unset;
+  }
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(2, 240px);
+    gap: 12px;
+    max-width: 1100px; margin: 0 auto;
+  }
+  .gallery-item {
+    position: relative; overflow: hidden;
+    cursor: pointer;
+  }
+  .gallery-item:nth-child(1) { grid-column: span 2; grid-row: span 2; }
+  .gallery-item:nth-child(4) { grid-column: span 2; }
+  .gallery-thumb {
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 60px;
+    position: relative; overflow: hidden;
+    transition: transform 0.5s ease;
+  }
+  .gallery-item:hover .gallery-thumb { transform: scale(1.06); }
+  .gallery-thumb::before {
+    content: '';
+    position: absolute; inset: 0;
+    transition: opacity 0.3s;
+  }
+  .gallery-item:hover .gallery-thumb::before { opacity: 0.5; }
+  .gallery-overlay {
+    position: absolute; inset: 0;
+    background: rgba(26,15,5,0);
+    display: flex; align-items: flex-end;
+    padding: 20px;
+    transition: background 0.3s;
+  }
+  .gallery-item:hover .gallery-overlay { background: rgba(26,15,5,0.6); }
+  .gallery-caption {
+    font-family: 'Cinzel', serif;
+    font-size: 13px; color: var(--cream);
+    letter-spacing: 2px;
+    opacity: 0; transform: translateY(10px);
+    transition: all 0.3s;
+  }
+  .gallery-item:hover .gallery-caption { opacity: 1; transform: translateY(0); }
+
+  /* Gallery themed backgrounds */
+  .g1 { background: linear-gradient(135deg, #2A1A08 0%, #4A2E12 40%, #1A0F05 100%); }
+  .g2 { background: linear-gradient(135deg, #1A1535 0%, #3E2557 50%, #0A0815 100%); }
+  .g3 { background: linear-gradient(135deg, #0A2535 0%, #164E6B 50%, #051520 100%); }
+  .g4 { background: linear-gradient(135deg, #1A2A08 0%, #3A5A15 50%, #0A1504 100%); }
+  .g5 { background: linear-gradient(135deg, #2A0808 0%, #5A1515 50%, #180505 100%); }
+
+  /* ===== CONTACT ===== */
+  #contact {
+    padding: 100px 5%;
+    background: linear-gradient(180deg, var(--dark) 0%, rgba(107,76,138,0.1) 100%);
+    min-height: unset;
+  }
+  .contact-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 60px; max-width: 1000px; margin: 0 auto;
+  }
+  .contact-info-title {
+    font-family: 'Cinzel', serif;
+    font-size: 22px; color: var(--cream);
+    margin-bottom: 30px;
+  }
+  .contact-item {
+    display: flex; align-items: flex-start; gap: 16px;
+    margin-bottom: 28px;
+  }
+  .contact-icon {
+    width: 44px; height: 44px; flex-shrink: 0;
+    border: 1px solid rgba(201,168,76,0.3);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; color: var(--gold);
+  }
+  .contact-item-label {
+    font-family: 'Cinzel', serif;
+    font-size: 10px; letter-spacing: 2px;
+    color: var(--gold); text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .contact-item-val {
+    font-size: 14px; color: rgba(245,237,214,0.6);
+    line-height: 1.6;
+  }
+  .contact-form-title {
+    font-family: 'Cinzel', serif;
+    font-size: 22px; color: var(--cream);
+    margin-bottom: 30px;
+  }
+
+  /* ===== FOOTER ===== */
+  footer {
+    background: #0A0501;
+    border-top: 1px solid rgba(201,168,76,0.1);
+    padding: 40px 5%;
+    text-align: center;
+  }
+  .footer-logo {
+    font-family: 'Cinzel', serif;
+    font-size: 22px; color: var(--gold);
+    letter-spacing: 4px; margin-bottom: 16px;
+  }
+  .footer-links {
+    display: flex; gap: 32px; justify-content: center;
+    flex-wrap: wrap; margin-bottom: 24px; list-style: none;
+  }
+  .footer-links a {
+    font-family: 'Cinzel', serif;
+    font-size: 10px; letter-spacing: 2px;
+    color: rgba(245,237,214,0.35);
+    text-decoration: none; text-transform: uppercase;
+    transition: color 0.3s;
+  }
+  .footer-links a:hover { color: var(--gold); }
+  .footer-copy {
+    font-size: 11px; color: rgba(245,237,214,0.2);
+    letter-spacing: 1px;
+  }
+
+  /* MUSIC TOGGLE */
+  .music-btn {
+    position: fixed; bottom: 30px; right: 30px; z-index: 500;
+    width: 48px; height: 48px;
+    background: rgba(26,15,5,0.9);
+    border: 1px solid rgba(201,168,76,0.4);
+    color: var(--gold);
+    font-size: 18px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    border-radius: 50%;
+  }
+  .music-btn:hover { border-color: var(--gold); background: rgba(42,26,8,0.95); }
+  .music-btn.playing { animation: musicPulse 1.5s ease infinite; }
+  @keyframes musicPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(201,168,76,0.3); }
+    50% { box-shadow: 0 0 0 8px rgba(201,168,76,0); }
+  }
+
+  /* MOBILE */
+  @media (max-width: 900px) {
+    .about-grid { grid-template-columns: 1fr; gap: 40px; }
+    .about-visual { display: none; }
+    .contact-grid { grid-template-columns: 1fr; }
+    .gallery-grid { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
+    .gallery-item:nth-child(1) { grid-column: 1 / -1; grid-row: span 1; height: 240px; }
+    .gallery-item:nth-child(4) { grid-column: 1 / -1; }
+    .form-row { grid-template-columns: 1fr; }
+    nav { padding: 0 20px; }
+    .nav-links { display: none; flex-direction: column; position: fixed; top: 70px; left: 0; right: 0; background: rgba(26,15,5,0.98); padding: 20px; gap: 16px; border-bottom: 1px solid rgba(201,168,76,0.2); }
+    .nav-links.open { display: flex; }
+    .nav-hamburger { display: flex; }
+    body { cursor: auto; }
+    .cursor, .cursor-trail { display: none; }
+    .reservation-wrap { padding: 30px 20px; }
+  }
+  @media (max-width: 600px) {
+    .menu-grid { grid-template-columns: 1fr; }
+    .gallery-grid { grid-template-columns: 1fr; grid-template-rows: auto; }
+    .gallery-item, .gallery-item:nth-child(1), .gallery-item:nth-child(4) { grid-column: auto; grid-row: auto; height: 200px; }
+    .gallery-thumb { height: 200px; }
+    .about-features { grid-template-columns: 1fr; }
+  }
+
+  /* REVEAL ANIMATION */
+  .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+  .reveal-delay-4 { transition-delay: 0.4s; }
+  
+  /* Mengubah ikon kalender dan jam menjadi putih (terang) */
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="time"]::-webkit-calendar-picker-indicator {
+  filter: invert(1); 
+  cursor: pointer;
+}
+
+/* Opsional: Membuat background input menjadi gelap agar ikon terang lebih terlihat */
+input[type="date"], 
+input[type="time"] {
+  color: #FBF6ED;       
+}
+  
+</style>
+</head>
+<body>
+
+<!-- Custom cursor -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-trail" id="cursorTrail"></div>
+
+<!-- LOADING SCREEN -->
+<div id="loading-screen">
+  <div class="loading-emblem">
+    <span class="loading-emblem-inner">✦</span>
+  </div>
+  <div class="loading-title">Traveler's Feast</div>
+  <div class="loading-sub">Teyvat Culinary Haven</div>
+  <div class="loading-bar-wrap">
+    <div class="loading-bar"></div>
+  </div>
+  <div class="loading-tip">✦ Welcome, Traveler. Adventure begins with good food. ✦</div>
+</div>
+
+<!-- MUSIC PLAYER (hidden audio) -->
+<audio id="bgMusic" loop>
+  <source src="img/music.mp3" type="audio/mpeg">
+</audio>
+<button class="music-btn" id="musicToggle" title="Toggle Music">♪</button>
+
+<!-- NAVBAR -->
+<nav id="navbar">
+  <a href="#home" class="nav-logo">
+    <span class="nav-logo-icon">⚜</span>
+    <span>Traveler's Feast</span>
+  </a>
+  <button class="nav-hamburger" id="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#home">Home</a></li>
+    <li><a href="#menu">Menu</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#reservation">Reservation</a></li>
+    <li><a href="#gallery">Gallery</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- ===== HOME ===== -->
+<section id="home">
+  <div class="hero-particles" id="heroParticles"></div>
+  <div class="hero-content">
+    <div class="hero-badge">✦ Established in the World of Teyvat ✦</div>
+    <h1 class="hero-title">Traveler's<br><span class="accent">Feast</span></h1>
+    <p class="hero-sub">Adventure Begins With Good Food</p>
+    <div class="hero-divider">
+      <div class="hero-divider-line"></div>
+      <span class="hero-divider-gem">❖</span>
+      <div class="hero-divider-line r"></div>
+    </div>
+    <p class="hero-promo">Selamat datang di Traveler's Feast — restoran bertema Teyvat yang menyajikan hidangan legendaris dari Mondstadt, Liyue, dan Inazuma. Rasakan cita rasa petualangan sejati setelah perjalanan panjang melintasi dunia Genshin.</p>
+    <div class="cta-group">
+      <a href="#menu" class="btn-primary">✦ Jelajahi Menu</a>
+      <a href="#reservation" class="btn-secondary">Buat Reservasi</a>
+    </div>
+  </div>
+  <div class="scroll-indicator">
+    <span>Scroll</span>
+    <div class="scroll-arrow"></div>
+  </div>
+</section>
+
+<!-- ===== MENU ===== -->
+<section id="menu">
+  <div class="section-header reveal">
+    <span class="section-tag">✦ Hidangan Khas Teyvat ✦</span>
+    <h2 class="section-title">Our <span class="gold">Culinary</span> Menu</h2>
+    <div class="ornament">
+      <div class="ornament-line"></div>
+      <div class="ornament-diamond"></div>
+      <div class="ornament-line r"></div>
+    </div>
+    <p class="section-desc">Setiap hidangan dibuat dengan resep autentik dari berbagai wilayah Teyvat, dimasak dengan penuh semangat petualangan.</p>
+  </div>
+
+  <div class="menu-filters reveal reveal-delay-1">
+    <button class="filter-btn active" data-filter="all">All Dishes</button>
+    <button class="filter-btn" data-filter="mondstadt">🌸 Mondstadt</button>
+    <button class="filter-btn" data-filter="liyue">🏮 Liyue</button>
+    <button class="filter-btn" data-filter="inazuma">⚡ Inazuma</button>
+    <button class="filter-btn" data-filter="drink">☕ Drinks</button>
+  </div>
+
+  <div class="menu-grid" id="menuGrid">
+    <!-- Cards injected by JS -->
+  </div>
+</section>
+
+<!-- ===== ABOUT ===== -->
+<section id="about">
+  <div class="section-header reveal">
+    <span class="section-tag">✦ Our Story ✦</span>
+    <h2 class="section-title">The <span class="gold">Legend</span> of Our Cafe</h2>
+    <div class="ornament">
+      <div class="ornament-line"></div>
+      <div class="ornament-diamond"></div>
+      <div class="ornament-line r"></div>
+    </div>
+  </div>
+  <div class="about-grid">
+    <div class="about-visual reveal">
+      <div class="about-img-frame">
+        <div class="about-corner tl"></div>
+        <div class="about-corner tr"></div>
+        <div class="about-corner bl"></div>
+        <div class="about-corner br"></div>
+        <div class="about-img-frame-inner">
+          <div class="about-img-symbol">⚜</div>
+        </div>
+      </div>
+      <div class="about-badge">
+        <div class="about-badge-num">3</div>
+        <div class="about-badge-text">Nations of Teyvat</div>
+      </div>
+    </div>
+    <div class="about-text reveal reveal-delay-2">
+      <h3 class="about-title">Di Mana Setiap <span class="gold">Petualang</span> Menemukan Rumah</h3>
+      <p class="about-story">Traveler's Feast lahir dari mimpi membawa cita rasa legendaris dunia Teyvat ke meja makan para petualang nyata. Terinspirasi dari Angin Kebebasan Mondstadt, Kekokohan Batu Liyue, dan Kilauan Petir Inazuma — setiap hidangan kami adalah perjalanan tersendiri.</p>
+      <p class="about-story">Restoran kami bukan sekadar tempat makan. Ini adalah tavern tempat petualang berkumpul, berbagi cerita, dan menemukan energi baru sebelum melanjutkan perjalanan panjang mereka.</p>
+      <div class="about-features">
+        <div class="about-feat">
+          <div class="about-feat-icon">🌸</div>
+          <div>
+            <div class="about-feat-label">Mondstadt Delights</div>
+            <div class="about-feat-desc">Masakan angin & kebebasan</div>
+          </div>
+        </div>
+        <div class="about-feat">
+          <div class="about-feat-icon">🏮</div>
+          <div>
+            <div class="about-feat-label">Liyue Cuisine</div>
+            <div class="about-feat-desc">Tradisi rempah-rempah kuno</div>
+          </div>
+        </div>
+        <div class="about-feat">
+          <div class="about-feat-icon">⚡</div>
+          <div>
+            <div class="about-feat-label">Inazuma Recipes</div>
+            <div class="about-feat-desc">Seni kuliner pulau petir</div>
+          </div>
+        </div>
+        <div class="about-feat">
+          <div class="about-feat-icon">✦</div>
+          <div>
+            <div class="about-feat-label">Original Recipes</div>
+            <div class="about-feat-desc">Resep eksklusif Teyvat</div>
+          </div>
+        </div>
+      </div>
+      <a href="#reservation" class="btn-primary">Reservasi Sekarang</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== RESERVATION ===== -->
+<section id="reservation">
+  <div class="section-header reveal">
+    <span class="section-tag">✦ Book Your Table ✦</span>
+    <h2 class="section-title">Buat <span class="gold">Reservasi</span></h2>
+    <div class="ornament">
+      <div class="ornament-line"></div>
+      <div class="ornament-diamond"></div>
+      <div class="ornament-line r"></div>
+    </div>
+    <p class="section-desc">Pastikan tempat dudukmu di Tavern Teyvat. Kami siap menyambut kedatangan petualang.</p>
+  </div>
+  <div class="reservation-wrap reveal reveal-delay-1">
+    <form id="reservationForm">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Nama Petualang</label>
+          <input type="text" placeholder="Nama lengkap kamu" required>
+        </div>
+        <div class="form-group">
+          <label>Nomor Kontak</label>
+          <input type="tel" placeholder="e.g. 08xx xxxx xxxx" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Tanggal Kunjungan</label>
+		  <input type="date" required>
+        </div>
+        <div class="form-group">
+          <label>Waktu</label>
+          <input type="time" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Jumlah Kursi</label>
+          <select required>
+            <option value="">Pilih jumlah</option>
+            <option>1 orang</option>
+            <option>2 orang</option>
+            <option>3–4 orang</option>
+            <option>5–6 orang</option>
+            <option>7–10 orang</option>
+            <option>10+ orang (Private)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Pilih Area</label>
+          <select>
+            <option>Mondstadt Corner</option>
+            <option>Liyue Hall</option>
+            <option>Inazuma Garden</option>
+            <option>VIP Teyvat Suite</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Permintaan Khusus</label>
+        <textarea placeholder="Ulang tahun? Anniversary? Ada alergi makanan? Beritahu kami..."></textarea>
+      </div>
+      <button type="submit" class="form-submit">✦ Konfirmasi Reservasi ✦</button>
+    </form>
+    <div class="form-success" id="formSuccess">
+      <p>✦ Reservasi Berhasil! ✦</p>
+      <p style="font-size:12px; margin-top:8px; color:rgba(245,237,214,0.5);">Kami akan menghubungi kamu untuk konfirmasi. Sampai jumpa, Traveler!</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== GALLERY ===== -->
+<section id="gallery">
+  <div class="section-header reveal">
+    <span class="section-tag">✦ Visual Journey ✦</span>
+    <h2 class="section-title"><span class="gold">Gallery</span> Teyvat</h2>
+    <div class="ornament">
+      <div class="ornament-line"></div>
+      <div class="ornament-diamond"></div>
+      <div class="ornament-line r"></div>
+    </div>
+    <p class="section-desc">Suasana restoran kami yang terinspirasi dari keindahan tiga negara Teyvat.</p>
+  </div>
+  <div class="gallery-grid reveal reveal-delay-1">
+    <div class="gallery-item">
+		<div class="gallery-thumb g1">
+			<img src="img/liyue-hall.jpg" style="width: 100%; height: 100%; object-fit: cover;">
+    
+			<div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(201,168,76,0.1),transparent)"></div>
+		</div>
+		<div class="gallery-overlay">
+			<span class="gallery-caption">Liyue Hall</span>
+		</div>
+	</div>
+    <div class="gallery-item">
+		<div class="gallery-thumb g1">
+			<img src="img/inazuma.jpg" style="width: 100%; height: 100%; object-fit: cover;">
+    
+			<div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(201,168,76,0.1),transparent)"></div>
+		</div>
+		<div class="gallery-overlay">
+			<span class="gallery-caption">Inazuma Garden</span>
+		</div>
+	</div>
+    <div class="gallery-item">
+		<div class="gallery-thumb g3">
+			<img src="img/mondstat-kitchen.jpg" style="width: 100%; height: 100%; object-fit: cover;">
+    
+			<div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(201,168,76,0.1),transparent)"></div>
+		</div>
+		<div class="gallery-overlay">
+			<span class="gallery-caption">Mondstadt Kitchen</span>
+		</div>
+	</div>
+    <div class="gallery-item">
+		<div class="gallery-thumb g3">
+			<img src="img/tea.jpg" style="width: 100%; height: 100%; object-fit: cover;">
+   
+			<div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(201,168,76,0.1),transparent)"></div>
+		</div>
+		<div class="gallery-overlay">
+			<span class="gallery-caption">Tea Ceremony</span>
+		</div>
+	</div>
+  </div>
+</section>
+
+<!-- ===== CONTACT ===== -->
+<section id="contact">
+  <div class="section-header reveal">
+    <span class="section-tag">✦ Reach Us ✦</span>
+    <h2 class="section-title">Hubungi <span class="gold">Kami</span></h2>
+    <div class="ornament">
+      <div class="ornament-line"></div>
+      <div class="ornament-diamond"></div>
+      <div class="ornament-line r"></div>
+    </div>
+  </div>
+  <div class="contact-grid">
+    <div class="reveal">
+      <h3 class="contact-info-title">Temukan Kami</h3>
+      <div class="contact-item">
+        <div class="contact-icon">📍</div>
+        <div>
+          <div class="contact-item-label">Lokasi</div>
+          <div class="contact-item-val">Jl. Kaliurang 9<br>Yogyakarta, Indonesia</div>
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon">📞</div>
+        <div>
+          <div class="contact-item-label">Telepon</div>
+          <div class="contact-item-val"><a href="tel:081335611599" style="color:inherit;text-decoration:none">081335611599</a></div>
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon">✉</div>
+        <div>
+          <div class="contact-item-label">Email</div>
+          <div class="contact-item-val"><a href="mailto:travelersfeastrestaurant@gmail.com" style="color:inherit;text-decoration:none">travelersfeastrestaurant@gmail.com</a></div>
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon">🕐</div>
+        <div>
+          <div class="contact-item-label">Jam Buka</div>
+          <div class="contact-item-val">Senin – Minggu<br>10:00 – 22:00 WIB</div>
+        </div>
+      </div>
+      <a href="https://wa.me/+6281335611599" target="_blank" class="btn-primary" style="display:inline-block;margin-top:10px">💬 WhatsApp Kami</a>
+    </div>
+    <div class="reveal reveal-delay-2">
+      <h3 class="contact-form-title">Kirim Pesan</h3>
+      <form id="contactForm">
+        <div class="form-group">
+          <label>Nama</label>
+          <input type="text" placeholder="Nama kamu" required>
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" placeholder="email@contoh.com" required>
+        </div>
+        <div class="form-group">
+          <label>Pesan</label>
+          <textarea placeholder="Tulis pesanmu di sini..." style="height:130px"></textarea>
+        </div>
+        <button type="submit" class="form-submit">Kirim Pesan ✦</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">⚜ TRAVELER'S FEAST</div>
+  <ul class="footer-links">
+    <li><a href="#home">Home</a></li>
+    <li><a href="#menu">Menu</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#reservation">Reservation</a></li>
+    <li><a href="#gallery">Gallery</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <p class="footer-copy">© 2025 Traveler's Feast · Teyvat Culinary Haven · All rights reserved</p>
+</footer>
+
+<script>
+// MENU DATA
+const menuItems = [
+  { name:"Sweet Madame", region:"mondstadt", price:"Rp 42.000", desc:"Bebek panggang renyah disajikan dengan saus angin Mondstadt dan salad musiman. Favorit para ksatria.", rating:4.8, image:"img/sweet-madame.jpg", filter:"mondstadt" },
+  { name:"Adeptus' Temptation", region:"liyue", price:"Rp 78.000", desc:"Sup mewah warisan para Adepti — daging premium, seafood segar, dan rempah-rempah Liyue yang misterius.", rating:5.0, image:"img/adeptus.jpg", filter:"liyue" },
+  { name:"Sakura Mochi", region:"inazuma", price:"Rp 28.000", desc:"Kue mochi lembut dengan isian kacang merah manis, dibungkus daun sakura harum dari kepulauan Inazuma.", rating:4.7, emoji:"🌸", filter:"inazuma" },
+  { name:"Mondstadt Hash Brown", region:"mondstadt", price:"Rp 35.000", desc:"Kentang goreng crispy khas Mondstadt dengan saus keju leleh dan taburan herb segar. Sarapan para pendekar.", rating:4.6, image:"img/mondstat-hash.jpg", filter:"mondstadt" },
+  { name:"Dango Milk", region:"inazuma", price:"Rp 38.000", desc:"Minuman susu hangat dengan dango kenyal bertusuk, taburan matcha premium, dan sirup khas Inazuma.", rating:4.9, emoji:"🍡", filter:"drink" },
+  { name:"Golden Crab", region:"liyue", price:"Rp 95.000", desc:"Kepiting emas Liyue dimasak dengan saus jahe spesial, disajikan dengan beras pulen harum.", rating:4.8, emoji:"🦀", filter:"liyue" },
+  { name:"Dandelion Wine", region:"mondstadt", price:"Rp 45.000", desc:"Minuman khas bunga dandelion Mondstadt, segar dan sedikit manis dengan aroma angin padang bebas.", rating:4.5, emoji:"🌼", filter:"drink" },
+  { name:"Thunder Ramen", region:"inazuma", price:"Rp 55.000", desc:"Ramen dengan kaldu tsuyu gelap yang kaya, topping chashu tebal, telur ajitsuke, dan nori crispy.", rating:4.9, emoji:"🍜", filter:"inazuma" },
+];
+
+function renderMenu(filter = "all") {
+  const grid = document.getElementById("menuGrid");
+  const items = filter === "all" ? menuItems : menuItems.filter(i => i.filter === filter);
+  
+  grid.innerHTML = items.map((item, idx) => `
+    <div class="menu-card reveal" style="transition-delay:${idx * 0.07}s">
+      
+      <div class="menu-card-img-wrap">
+        <img src="${item.image || item.imgUrl}" alt="${item.name}" class="menu-card-img">
+      </div>
+      
+      <div class="menu-card-region">${item.region}</div>
+      
+      <div class="menu-card-body">
+        <h3 class="menu-card-name">${item.name}</h3>
+        <p class="menu-card-desc">${item.desc}</p>
+        <div class="menu-card-footer">
+          <div>
+            <div class="menu-card-price">${item.price}</div>
+            <div class="menu-card-rating">
+              <span class="stars">${'★'.repeat(Math.floor(item.rating))}${item.rating % 1 ? '½' : ''}</span>
+              <span>${item.rating}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <button class="menu-card-add" onclick="alert('${item.name} ditambahkan ke pesanan! ✦')">+</button>
+    </div>
+  `).join("");
+  
+  observeReveal();
+}
+
+// FILTER BUTTONS
+document.querySelectorAll(".filter-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    renderMenu(btn.dataset.filter);
+  });
+});
+
+// LOADING SCREEN
+window.addEventListener("load", () => {
+  setTimeout(() => {
+    document.getElementById("loading-screen").classList.add("hidden");
+  }, 3000);
+});
+
+// NAVBAR SCROLL
+window.addEventListener("scroll", () => {
+  const nav = document.getElementById("navbar");
+  if (window.scrollY > 50) nav.classList.add("scrolled");
+  else nav.classList.remove("scrolled");
+});
+
+// HAMBURGER
+document.getElementById("hamburger").addEventListener("click", () => {
+  document.getElementById("navLinks").classList.toggle("open");
+});
+document.querySelectorAll(".nav-links a").forEach(a => {
+  a.addEventListener("click", () => {
+    document.getElementById("navLinks").classList.remove("open");
+  });
+});
+
+// CURSOR
+const cursor = document.getElementById("cursor");
+const cursorTrail = document.getElementById("cursorTrail");
+if (cursor) {
+  document.addEventListener("mousemove", e => {
+    cursor.style.left = e.clientX + "px";
+    cursor.style.top = e.clientY + "px";
+    setTimeout(() => {
+      cursorTrail.style.left = e.clientX + "px";
+      cursorTrail.style.top = e.clientY + "px";
+    }, 80);
+  });
+}
+
+// PARTICLES
+function createParticles() {
+  const container = document.getElementById("heroParticles");
+  if (!container) return;
+  for (let i = 0; i < 30; i++) {
+    const p = document.createElement("div");
+    p.className = "particle";
+    p.style.left = Math.random() * 100 + "%";
+    p.style.width = p.style.height = (Math.random() * 3 + 1) + "px";
+    p.style.animationDuration = (Math.random() * 10 + 8) + "s";
+    p.style.animationDelay = (Math.random() * 8) + "s";
+    container.appendChild(p);
+  }
+}
+createParticles();
+
+// REVEAL ON SCROLL
+function observeReveal() {
+  const els = document.querySelectorAll(".reveal:not(.visible)");
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add("visible"); });
+  }, { threshold: 0.1 });
+  els.forEach(el => observer.observe(el));
+}
+observeReveal();
+
+// MUSIC TOGGLE
+const musicBtn = document.getElementById("musicToggle");
+const bgMusic = document.getElementById("bgMusic");
+let musicOn = false;
+musicBtn.addEventListener("click", () => {
+  musicOn = !musicOn;
+  if (musicOn) {
+    bgMusic.play().catch(() => {});
+    musicBtn.classList.add("playing");
+    musicBtn.textContent = "♫";
+  } else {
+    bgMusic.pause();
+    musicBtn.classList.remove("playing");
+    musicBtn.textContent = "♪";
+  }
+});
+
+// DARK MODE TOGGLE
+const modeBtn = document.getElementById("modeToggle");
+modeBtn.addEventListener("click", () => {
+  document.body.classList.toggle("light-mode");
+  modeBtn.textContent = document.body.classList.contains("light-mode") ? "🌙" : "☀";
+});
+
+// RESERVATION FORM
+document.getElementById("reservationForm").addEventListener("submit", e => {
+  e.preventDefault();
+  e.target.style.display = "none";
+  document.getElementById("formSuccess").style.display = "block";
+});
+
+// CONTACT FORM
+document.getElementById("contactForm").addEventListener("submit", e => {
+  e.preventDefault();
+  e.target.querySelector('button').textContent = "✓ Pesan Terkirim!";
+  e.target.querySelector('button').style.background = "var(--inazuma)";
+  e.target.querySelector('button').style.color = "var(--cream)";
+  setTimeout(() => {
+    e.target.querySelector('button').textContent = "Kirim Pesan ✦";
+    e.target.querySelector('button').style.background = "";
+    e.target.querySelector('button').style.color = "";
+  }, 3000);
+});
+
+// RENDER MENU ON LOAD
+renderMenu();
+</script>
+</body>
+</html>
